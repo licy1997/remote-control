@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join, resolve } from 'path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import styleImport from 'vite-plugin-style-import'
@@ -22,6 +22,12 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     outDir: '../../dist/renderer',
+    rollupOptions: {
+      input: {
+        main: join(__dirname, '../src/renderer/index.html'),
+        control: join(__dirname, '../src/renderer/src/control/index.html')
+      }
+    }
   },
   css: {
     preprocessorOptions: {

@@ -1,7 +1,8 @@
 import { join } from 'path'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import Store from 'electron-store'
-
+import handleIPC from './ipc'
+import { create } from './window/main'
 app.disableHardwareAcceleration()
 
 if (!app.requestSingleInstanceLock()) {
@@ -12,28 +13,10 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null
 
 async function mainWin() {
-  win = new BrowserWindow({
-    title: 'Main window',
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.cjs')
-    },
-  })
+  create()
+  
+  handleIPC()
 
-  if (app.isPackaged) {
-    win.loadFile(join(__dirname, '../renderer/index.html'))
-  } else {
-    const pkg = await import('../../package.json')
-    const url = `http://${pkg.env.HOST || '127.0.0.1'}:${pkg.env.PORT}`
-
-    win.loadURL(url)
-    win.maximize()
-    win.webContents.openDevTools()
-  }
-
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
 }
 
 app.whenReady().then(mainWin)

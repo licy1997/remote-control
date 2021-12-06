@@ -73,14 +73,3 @@
 - 项目整体趋于 配置化 而不是大量的脚本让人眼花缭乱 -- **上手简单**
 
 
-## 效果
-
-<img width="400px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/vite-react-electron/react-win.png" />
-
-## 微信讨论群 | | 请我喝杯下午茶 🥳
-
-<div style="display:flex;">
-  <img width="244px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/assets/wechat/group/qrcode.jpg" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img width="244px" src="https://raw.githubusercontent.com/caoxiemeihao/blog/main/assets/wechat/%24qrcode/%2419.99.png" />
-</div>
