@@ -1,16 +1,31 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
-let win: BrowserWindow 
-
-async function  create() {
+import handleIPC from '../ipc'
+import robot from '../robot'
+import initTrayAndMenu from '../trayAndMenu/index'
+import { initialize, enable as enableRemote } from "@electron/remote/main";
+let win: BrowserWindow
+let willQuitApp = false
+async function create() {
   win = new BrowserWindow({
     title: 'Main window',
     width: 600,
     height: 300,
     webPreferences: {
       nodeIntegration: true,
-      preload: join(__dirname, '../preload/index.cjs')
+      preload: join(__dirname, '../preload/index.cjs'),
     },
+  })
+  initialize()
+  enableRemote(win.webContents);
+  win.on('close', (e) => {
+    
+    if (willQuitApp) {
+      win = null
+    } else {
+      e.preventDefault()
+      win.hide()
+    }
   })
   if (app.isPackaged) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
@@ -21,19 +36,27 @@ async function  create() {
     win.loadURL(url)
     win.maximize()
     win.webContents.openDevTools()
+
   }
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
+    win?.webContents.send('main-process-message', new Date().toLocaleString())
   })
+  handleIPC()
+  robot()
+  initTrayAndMenu()
 }
 
-function send(channel:string, ...args:any[]) {
+function send(channel: string, ...args: any[]) {
   win.webContents.send(channel, ...args)
 }
 
-export {
-  create,
-  send
+function show() {
+  win.show()
 }
+function close() {
+  willQuitApp = true
+  win.close()
+}
+export { create, send, show, close }

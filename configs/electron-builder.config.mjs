@@ -3,10 +3,12 @@
  * @type {import('electron-builder').Configuration}
  */
 const config = {
-  appId: "308487730@qq.com",
-  asar: true,
+  appId: "1115291516@qq.com",
+  productName: "laoli",
+  asar: false,
   directories: {
-    output: "release/${version}"
+    output: "release/${version}",
+    "buildResources": "resources"
   },
   files: [
     "!node_modules",
@@ -16,23 +18,18 @@ const config = {
   mac: {
     artifactName: "${productName}_${version}.${ext}",
     target: [
-      "dmg"
+      "dmg", "zip"
     ]
   },
   win: {
     target: [
-      {
-        target: "nsis",
-        arch: [
-          "x64"
-        ]
-      }
+      "nsis", "squirrel"
     ],
     artifactName: "${productName}_${version}.${ext}"
   },
   nsis: {
     oneClick: false,
-    perMachine: false,
+    perMachine: true,
     allowToChangeInstallationDirectory: true,
     deleteAppDataOnUninstall: false
   }

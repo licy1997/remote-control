@@ -2,10 +2,22 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
-
+import Control from './Control'
+import { 
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  HashRouter
+} from "react-router-dom";
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <HashRouter>
+    <Routes>
+      <Route path="/" element={<App></App>}></Route>
+      <Route path="/control" element={<Control></Control>}></Route>
+      </Routes>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root'),
   () => {
@@ -24,7 +36,7 @@ window.bridge.ipcRenderer.on('main-process-message', (_event, ...args) => {
 
 // Use 'electron-store'
 const store = {
-  async get(key: string) {
+  async get(key) {
     const { invoke } = window.bridge.ipcRenderer
     let value = await invoke('electron-store', 'get', key)
     try {
@@ -33,7 +45,7 @@ const store = {
       return value
     }
   },
-  async set(key: string, value: any) {
+  async set(key, value) {
     const { invoke } = window.bridge.ipcRenderer
     let val = value
     try {

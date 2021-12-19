@@ -2,7 +2,9 @@ import { join } from 'path'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import Store from 'electron-store'
 import handleIPC from './ipc'
-import { create } from './window/main'
+import { create, show as showMainWindow, close as closeMainWindow } from './window/main'
+// import { create } from './window/control'
+import robot from './robot'
 app.disableHardwareAcceleration()
 
 if (!app.requestSingleInstanceLock()) {
@@ -15,26 +17,36 @@ let win: BrowserWindow | null = null
 async function mainWin() {
   create()
   
-  handleIPC()
+  // setTimeout(()=>{
+  //   create()
+  // }, 5000)
+  
 
 }
-
-app.whenReady().then(mainWin)
-
-app.on('window-all-closed', () => {
-  win = null
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
 app.on('second-instance', () => {
-  if (win) {
-    // Someone tried to run a second instance, we should focus our window.
-    if (win.isMinimized()) win.restore()
-    win.focus()
-  }
+  showMainWindow()
 })
+app.whenReady().then(mainWin)
+app.on('before-quit', () => {
+  closeMainWindow()
+})
+app.on('activate', () => {
+  showMainWindow()
+})
+// app.on('window-all-closed', () => {
+//   win = null
+//   if (process.platform !== 'darwin') {
+//     app.quit()
+//   }
+// })
+
+// app.on('second-instance', () => {
+//   if (win) {
+//     // Someone tried to run a second instance, we should focus our window.
+//     if (win.isMinimized()) win.restore()
+//     win.focus()
+//   }
+// })
 
 // -------------------------------------
 
